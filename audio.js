@@ -10,6 +10,7 @@ export function initializeAudio() {
 export function playCorrect() {
   correctSound.currentTime = 0;
   correctSound.play().catch(() => {});
+  return correctSound; // return the audio so we can detect when it finishes
 }
 
 export function playWrong() {

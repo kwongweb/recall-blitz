@@ -109,13 +109,13 @@ function App() {
     }
 
     if (newSequence.length === correctSequence.length) {
-      playCorrect();
-      const timeTaken = (Date.now() - startTime) / 1000;
-      const levelScore = Math.max(1000 - timeTaken * 100, 100);
-      setScore((prev) => prev + Math.floor(levelScore));
-      setTimeout(() => {
+      const audio = playCorrect(); // audio element returned
+      audio.onended = () => {
+        const timeTaken = (Date.now() - startTime) / 1000;
+        const levelScore = Math.max(1000 - timeTaken * 100, 100);
+        setScore((prev) => prev + Math.floor(levelScore));
         setLevel((prev) => prev + 1);
-      }, 150);
+      };
     }
   }
 
