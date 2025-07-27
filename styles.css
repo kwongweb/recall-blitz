@@ -1,0 +1,138 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to right, #1e3c72, #2a5298);
+  color: #ffffff;
+  text-align: center;
+}
+
+h1 {
+  font-size: 1.8rem;
+  margin-top: 16px;
+  text-shadow: 2px 2px #00000055;
+}
+
+.game-container {
+  margin: auto;
+  padding: 12px;
+  background-color: #ffffff10;
+  border-radius: 15px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
+  max-width: 100%;
+}
+
+.map-container {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  margin: 16px auto;
+  border: 2px dashed #ffffffaa;
+  border-radius: 10px;
+  background-color: #00000011;
+}
+
+.box {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  background-color: #f5a623;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.3s;
+  user-select: none;
+}
+
+.box:hover {
+  transform: scale(1.05);
+  background-color: #f7b84d;
+}
+
+.box.clicked {
+  box-shadow: 0 0 0 4px #ffffff55 inset;
+  transform: scale(0.95);
+}
+
+button {
+  background-color: #00c9a7;
+  color: white;
+  font-size: 0.95rem;
+  padding: 10px 16px;
+  margin-top: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #00e0ba;
+}
+
+.flash {
+  animation: flash-red 0.3s ease-in-out;
+}
+
+@keyframes flash-red {
+  0% { background-color: rgba(255, 0, 0, 0.3); }
+  100% { background-color: transparent; }
+}
+
+.lives {
+  margin: 10px 0;
+  font-size: 1.5rem;
+}
+
+.heart {
+  margin: 0 4px;
+  transition: transform 0.2s ease;
+}
+
+.heart.full {
+  color: red;
+}
+
+.heart.empty {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* Tablet and up */
+@media (min-width: 600px) {
+  h1 {
+    font-size: 2.4rem;
+  }
+
+  .box {
+    width: 60px;
+    height: 60px;
+    font-size: 1.4rem;
+  }
+
+  .map-container {
+    height: 400px;
+  }
+
+  button {
+    font-size: 1rem;
+    padding: 12px 20px;
+  }
+}
+
+/* Desktop and up */
+@media (min-width: 900px) {
+  .game-container {
+    max-width: 600px;
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+}
