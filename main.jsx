@@ -1,9 +1,8 @@
-
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
 import { vibrate } from "./vibration";
-import { playCorrect, playWrong } from "./audio";
+import { playCorrect, playWrong, initializeAudio } from "./audio";
 
 const TOTAL_LIVES = 3;
 const INITIAL_DELAY = 1000;
@@ -50,6 +49,7 @@ function App() {
   const [startTime, setStartTime] = useState(null);
   const [feedbackFlash, setFeedbackFlash] = useState(false);
   const [clickedBox, setClickedBox] = useState(null);
+  const [audioInitialized, setAudioInitialized] = useState(false);
 
   useEffect(() => {
     initializeLevel(level);
@@ -75,6 +75,11 @@ function App() {
   }
 
   function handleBoxClick(num) {
+    if (!audioInitialized) {
+      initializeAudio();
+      setAudioInitialized(true);
+    }
+
     if (gameOver || showNumbers) return;
     vibrate();
     setClickedBox(num);
