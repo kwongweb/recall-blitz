@@ -1,3 +1,4 @@
+
 body {
   margin: 0;
   padding: 0;
@@ -97,10 +98,12 @@ button:hover {
 
 .heart.full {
   color: red;
+  opacity: 1;
 }
 
 .heart.empty {
   color: rgba(255, 255, 255, 0.3);
+  opacity: 0.4;
 }
 
 /* Tablet and up */

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
@@ -96,7 +97,6 @@ function App() {
         return;
       }
 
-      // Reset the level sequence without advancing
       setUserSequence([]);
       setShowNumbers(true);
       const timer = setTimeout(() => setShowNumbers(false), INITIAL_DELAY + level * 500);
@@ -108,7 +108,9 @@ function App() {
       const timeTaken = (Date.now() - startTime) / 1000;
       const levelScore = Math.max(1000 - timeTaken * 100, 100);
       setScore((prev) => prev + Math.floor(levelScore));
-      setLevel((prev) => prev + 1);
+      setTimeout(() => {
+        setLevel((prev) => prev + 1);
+      }, 150);
     }
   }
 
@@ -125,9 +127,11 @@ function App() {
       <div>Map: {map}</div>
       <div>Level: {level}</div>
       <div>Score: {score}</div>
-      <div className="lives">
+      <div className="lives" aria-label={`Lives: ${lives}`}>
         {[...Array(TOTAL_LIVES)].map((_, i) => (
-          <span key={i} className={`heart ${i < lives ? "full" : "empty"}`}>❤️</span>
+          <span key={i} className={`heart ${i < lives ? "full" : "empty"}`}>
+            {i < lives ? "❤️" : "🖤"}
+          </span>
         ))}
       </div>
       {gameOver && <button onClick={resetGame}>Restart Game</button>}
