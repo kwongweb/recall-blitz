@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
 import { vibrate } from "./vibration";
@@ -7,34 +7,6 @@ import { playCorrect, playWrong, initializeAudio } from "./audio";
 const TOTAL_LIVES = 3;
 const INITIAL_DELAY = 1000;
 const BOX_SIZE = 60; // pixels
-
-function generateNonOverlappingPositions(count) {
-  const positions = [];
-  const mapWidth = 300; // pixels, adjust if needed
-  const mapHeight = 300;
-
-  for (let i = 0; i < count; i++) {
-    let pos;
-    let attempts = 0;
-    do {
-      pos = {
-        x: Math.random() * (mapWidth - BOX_SIZE),
-        y: Math.random() * (mapHeight - BOX_SIZE)
-      };
-      attempts++;
-    } while (
-      positions.some(
-        (p) =>
-          Math.abs(p.x - pos.x) < BOX_SIZE &&
-          Math.abs(p.y - pos.y) < BOX_SIZE
-      ) &&
-      attempts < 1000
-    );
-    positions.push(pos);
-  }
-
-  return positions.map((p, i) => ({ id: i + 1, ...p }));
-}
 
 function App() {
   const [map] = useState("default");
@@ -50,18 +22,54 @@ function App() {
   const [feedbackFlash, setFeedbackFlash] = useState(false);
   const [clickedBox, setClickedBox] = useState(null);
   const [audioInitialized, setAudioInitialized] = useState(false);
+  const mapRef = useRef(null);
 
   useEffect(() => {
     initializeLevel(level);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [level]);
+
+  function generateNonOverlappingPositions(count, containerWidth, containerHeight) {
+    const positions = [];
+
+    for (let i = 0; i < count; i++) {
+      let pos;
+      let attempts = 0;
+      do {
+        pos = {
+          x: Math.random() * (containerWidth - BOX_SIZE),
+          y: Math.random() * (containerHeight - BOX_SIZE),
+        };
+        attempts++;
+      } while (
+        positions.some(
+          (p) =>
+            Math.abs(p.x - pos.x) < BOX_SIZE &&
+            Math.abs(p.y - pos.y) < BOX_SIZE
+        ) &&
+        attempts < 1000
+      );
+      positions.push(pos);
+    }
+
+    return positions.map((p, i) => ({ id: i + 1, ...p }));
+  }
 
   function initializeLevel(currentLevel) {
     const sequence = [...Array(currentLevel)].map((_, i) => i + 1);
-    const positions = generateNonOverlappingPositions(currentLevel);
+
+    const container = mapRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const positions = generateNonOverlappingPositions(
+      currentLevel,
+      rect.width,
+      rect.height
+    );
 
     const configuredBoxes = sequence.map((num, idx) => ({
       number: num,
-      ...positions[idx]
+      ...positions[idx],
     }));
 
     setBoxes(configuredBoxes);
@@ -109,7 +117,7 @@ function App() {
     }
 
     if (newSequence.length === correctSequence.length) {
-      const audio = playCorrect(); // audio element returned
+      const audio = playCorrect();
       audio.onended = () => {
         const timeTaken = (Date.now() - startTime) / 1000;
         const levelScore = Math.max(1000 - timeTaken * 100, 100);
@@ -124,6 +132,7 @@ function App() {
     setLives(TOTAL_LIVES);
     setScore(0);
     setGameOver(false);
+    initializeLevel(1);
   }
 
   return (
@@ -135,12 +144,12 @@ function App() {
       <div className="lives" aria-label={`Lives: ${lives}`}>
         {[...Array(TOTAL_LIVES)].map((_, i) => (
           <span key={i} className={`heart ${i < lives ? "full" : "empty"}`}>
-            {i < lives ? "❤️" : "🖤"}
+            {i < lives ? "❤️" : "🐟"}
           </span>
         ))}
       </div>
       {gameOver && <button onClick={resetGame}>Restart Game</button>}
-      <div className="map-container">
+      <div className="map-container" ref={mapRef}>
         {boxes.map((box) => (
           <div
             key={box.number}
