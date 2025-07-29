@@ -7,6 +7,7 @@ import { playCorrect, playWrong, initializeAudio } from "./audio";
 const TOTAL_LIVES = 3;
 const INITIAL_DELAY = 1000;
 const BOX_SIZE = 60; // pixels
+const MIN_DISTANCE = BOX_SIZE + 4; // Add small buffer to avoid visual overlap
 
 function App() {
   const [map] = useState("default");
@@ -44,8 +45,8 @@ function App() {
       } while (
         positions.some(
           (p) =>
-            Math.abs(p.x - pos.x) < BOX_SIZE &&
-            Math.abs(p.y - pos.y) < BOX_SIZE
+            Math.abs(p.x - pos.x) < MIN_DISTANCE &&
+            Math.abs(p.y - pos.y) < MIN_DISTANCE
         ) &&
         attempts < 1000
       );
